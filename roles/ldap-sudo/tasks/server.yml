@@ -1,0 +1,64 @@
+---
+- name: Get Sudo Schema
+  shell: "rpm -ql sudo|grep OpenLDAP"
+  register: sudo_schema
+
+- name: debug sudo_schema
+  debug:
+    msg: "{{ sudo_schema.stdout }}"
+
+- name: Copy Sudo Schema
+  copy:
+    src: "{{ sudo_schema.stdout }}"
+    dest: /etc/openldap/schema/sudo.schema
+    remote_src: yes
+
+- name: Create directory ~/sudo
+  file:
+    path: ~/sudo
+    state: directory
+
+- name: Create sudoSchema.conf
+  copy:
+    content: "include /etc/openldap/schema/sudo.schema"
+    dest: ~/sudo/sudoSchema.conf
+
+- name: Run slapcat to generate sudo.ldif
+  shell: slapcat -f ~/sudo/sudoSchema.conf -F /tmp/ -n0 -s "cn={0}sudo,cn=schema,cn=config" > ~/sudo/sudo.ldif
+
+- name: Replace string in sudo.ldif
+  replace:
+    path: ~/sudo/sudo.ldif
+    regexp: '\{0}sudo'
+    replace: '{13}sudo'
+
+- name: Create sudo-config.ldif
+  shell: "head -n-8 ~/sudo/sudo.ldif > ~/sudo/sudo-config.ldif"
+
+- name: Add LDIF entry to LDAP
+  shell: "cat ~/sudo/sudo-config.ldif | ldapadd -Y EXTERNAL -H ldapi:///"
+  failed_when: false
+
+- name: Get Sudo Schema Type
+  shell: ldapsearch -LLLY EXTERNAL -H ldapi:/// -b cn={13}sudo,cn=schema,cn=config | grep NAME | awk '{print $4,$5}'
+  register: sudo_type
+
+- name: Debug Sudo Schema
+  debug:
+    msg: "{{ sudo_type.stdout_lines }}"
+
+- name: Create Sudo Rule
+  ldap_entry:
+    dn: "cn=test,ou=sudoers,{{ ldap_server.dc }}"
+    server_uri: "ldap://{{ ldap_server_ip }}"
+    objectClass: [top, sudoRole]
+    attributes:
+      cn: "test"
+      sudoCommand: "ALL"
+      sudoHost: "ALL"
+      sudoOption: "!authenticate"
+      sudoRunAsUser: "ALL"
+      sudoUser: "test1"
+    state: present
+    bind_dn: "{{ ldap_server.admin.dn }}"
+    bind_pw: "{{ ldap_user.admin.pass }}"

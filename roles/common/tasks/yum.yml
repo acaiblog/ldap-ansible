@@ -1,0 +1,44 @@
+---
+- name: find repo files
+  find:
+    paths: /etc/yum.repos.d
+    patterns: "*.repo"
+  register: repo_files
+
+- name: delete yum files
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items:
+    - "{{ repo_files.files }}"
+
+- name: copy yum file
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/yum.repos.d/{{ item }}"
+  with_items:
+    - "{{ arch[ansible_architecture]['base']}}"
+    - "epel-7.repo"
+
+- name: install software
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - chrony
+    - net-tools
+    - python-devel
+    - gcc
+    - openldap-devel
+
+
+- name: copy chrony config
+  template:
+    src: chrony.conf.j2
+    dest: /etc/chrony.conf
+
+- name: startup chrony service
+  systemd:
+    name: chronyd
+    state: started
+    enabled: yes

@@ -1,0 +1,7 @@
+---
+# defaults file for roles/common
+arch:
+  x86_64:
+    base: 'CentOS-Base.repo'
+  aarch64:
+    base: 'CentOS-altarch-7.repo'

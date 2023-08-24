@@ -1,0 +1,5 @@
+---
+# defaults file for roles/ldap-init
+user:
+  name: test1
+  group: testgrp

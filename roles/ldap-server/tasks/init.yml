@@ -1,0 +1,39 @@
+---
+- name: Copy init  scirpt files
+  template:
+    src: "init.sh.j2"
+    dest: "/tmp/init.sh"
+    mode: 0777
+
+- name: Running Init Script
+  shell: /tmp/init.sh
+
+- name: Import Schema
+  shell: "ldapadd -Y EXTERNAL -H ldapi:/// -D \"cn=config\" -f /etc/openldap/schema/{{ item }}"
+  failed_when: false
+  with_items:
+    - collective.ldif
+    - corba.ldif
+    - core.ldif
+    - cosine.ldif
+    - duaconf.ldif
+    - dyngroup.ldif
+    - inetorgperson.ldif
+    - java.ldif
+    - misc.ldif
+    - nis.ldif
+    - openldap.ldif
+    - pmi.ldif
+    - ppolicy.ldif
+
+- name: Add LDAP configuration lines to ldap.conf
+  lineinfile:
+    path: /etc/openldap/ldap.conf
+    line: "{{ item }}"
+  with_items:
+    - "BASE   dc=acaiblog,dc=top"
+    - "URI    ldap://{{ ldap_server_ip }}"
+
+
+
+

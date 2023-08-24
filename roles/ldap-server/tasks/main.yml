@@ -1,0 +1,4 @@
+---
+# tasks file for roles/ldap-server
+- include: install.yml
+- include: init.yml

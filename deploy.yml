@@ -1,0 +1,48 @@
+---
+- name: Apply role common
+  gather_facts: true
+  hosts:
+    - ldap_server
+    - ldap_client
+  tags:
+    - common
+  roles:
+    - role: common
+
+- name: Apply role openldap-server
+  gather_facts: true
+  hosts:
+    - ldap_server
+  tags:
+    - ldap_server
+  roles:
+    - role: ldap-server
+
+- name: Apply role openldap-init
+  gather_facts: false
+  hosts:
+    - ldap_server
+  tags:
+    - ldap_init
+  roles:
+    - role: ldap-init
+
+- name: Apply role openldap-client
+  gather_facts: true
+  hosts:
+    - ldap_client
+  tags:
+    - ldap_client
+  roles:
+    - role: ldap-client
+
+- name: Apply role openldap-sudo
+  gather_facts: true
+  hosts:
+    - ldap_server
+    - ldap_client
+  tags:
+    - ldap_sudo
+  roles:
+    - role: ldap-sudo
+      when: enable_sudo | bool

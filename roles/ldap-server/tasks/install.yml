@@ -1,0 +1,39 @@
+---
+- name: Install OpenLDAP
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - openldap
+    - openldap-servers
+    - openldap-clients
+    - openldap-devel
+    - compat-openldap
+    - migrationtools
+
+- name: Copy DB_CONFIG file
+  copy:
+    src: /usr/share/openldap-servers/DB_CONFIG.example
+    dest: /var/lib/ldap/DB_CONFIG
+    remote_src: yes
+
+- name: Set OpenLDAP directory to ldap User
+  file:
+    path: "{{ item }}"
+    group: ldap
+    owner: ldap
+  with_items:
+    - /etc/openldap
+    - /var/lib/ldap
+
+- name: Start Slapd Service
+  systemd:
+    name: slapd
+    state: started
+    enabled: yes
+
+- name: Wait for OpenLDAP Port
+  wait_for:
+    host: 127.0.0.1
+    port: 389
+    state: started

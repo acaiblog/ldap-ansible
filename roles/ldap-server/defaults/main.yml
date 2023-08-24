@@ -1,0 +1,6 @@
+---
+# defaults file for roles/ldap-server
+ldap_server:
+  admin:
+    dn: "cn={{ ldap.admin.user }},dc={{ ldap.domain.split('.') | join(',dc=') }}"
+  dc: "dc={{ ldap.domain.split('.') | join(',dc=') }}"

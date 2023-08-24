@@ -1,0 +1,41 @@
+---
+ldap_server:
+  admin:
+    dn: "cn={{ ldap_user.admin.user }},dc={{ ldap_domain.split('.') | join(',dc=') }}"
+  dc: "dc={{ ldap_domain.split('.') | join(',dc=') }}"
+
+ldap_groups:
+  test:
+    name: "cn=test"
+    group: "groups"
+    objectClass: posixGroup
+    attributes:
+      cn: testgrp
+      gidNumber: "{{ gid }}"
+
+users:
+  test:
+    name: "uid=test1"
+    group: "users"
+    objectClass:
+      - top
+      - organizationalPerson
+      - posixAccount
+    attributes:
+      cn: "test1"
+      sn: "test1"
+      uidNumber: "{{ uid }}"
+      gidNumber: "{{ gid }}"
+      userPassword: "{{ ldap_user.test.pass }}"
+      homeDirectory: "/home/test1"
+      loginShell: /bin/bash
+#  sssd:
+#    name: "cn={{ ldap_user.sssd.user }}"
+#    group: services
+#    objectClass:
+#      - top
+#      - person
+#    attributes:
+#      cn: "{{ ldap_user.sssd.user }}"
+#      sn: "{{ ldap_user.sssd.user }}"
+#      userPassword: "{{ ldap_user.sssd.pass }}"

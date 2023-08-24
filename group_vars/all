@@ -1,0 +1,17 @@
+---
+api_interface: eth0
+chrony_server: 192.168.1.34
+ldap_server_ip: 192.168.1.34
+ldap_domain: ldap.com
+enable_sudo: yes
+ldap_user:
+  admin:
+    user: admin
+    pass: 123456
+  test:
+    user: test1
+    pass: 123456
+  sssd:
+    user: sssd
+    pass: 123456
+

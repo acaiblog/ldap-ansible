@@ -1,0 +1,11 @@
+---
+# handlers file for roles/ldap-client
+- name: Restart SSH Service
+  systemd:
+    name: sshd
+    state: restarted
+
+- name: Restart SSSD Service
+  systemd:
+    name: sssd
+    state: restarted

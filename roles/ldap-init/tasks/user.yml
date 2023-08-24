@@ -1,0 +1,41 @@
+---
+- name: Generate UID and GID
+  get_id:
+    name: "{{ item.name }}"
+    state: "{{ item.type }}"
+  register: id_list
+  with_items:
+    - { name: "{{ user.name }}", type: "uid" }
+    - { name: "{{ user.group }}", type: "gid" }
+
+- name: Get UID and GID
+  set_fact:
+    uid: "{{ id_list['results'][0]['id'] }}"
+    gid: "{{ id_list['results'][1]['id'] }}"
+
+- name: debug groups
+  debug:
+    msg: "{{ item.value }}"
+  with_dict: "{{ ldap_groups }}"
+
+- name: Create Group in Groups
+  ldap_entry:
+    dn: "{{ item.value.name }},ou={{ item.value.group }},{{ ldap_server.dc }}"
+    server_uri: "ldap://{{ ldap_server_ip }}"
+    objectClass: "{{ item.value.objectClass }}"
+    attributes: "{{ item.value.attributes }}"
+    state: present
+    bind_dn: "{{ ldap_server.admin.dn }}"
+    bind_pw: "{{ ldap_user.admin.pass }}"
+  with_dict: "{{ ldap_groups }}"
+
+- name: Create LDAP Users
+  ldap_entry:
+    dn: "{{ item.value.name }},ou={{ item.value.group }},{{ ldap_server.dc }}"
+    server_uri: "ldap://{{ ldap_server_ip }}"
+    objectClass: "{{ item.value.objectClass }}"
+    attributes: "{{ item.value.attributes }}"
+    state: present
+    bind_dn: "{{ ldap_server.admin.dn }}"
+    bind_pw: "{{ ldap_user.admin.pass }}"
+  with_dict: "{{ users }}"

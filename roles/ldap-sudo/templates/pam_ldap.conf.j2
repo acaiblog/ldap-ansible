@@ -1,0 +1,4 @@
+uri ldap://{{ ldap_server_ip }}
+base {{ ldap_server.dc }}
+binddn {{ ldap_server.admin.dn }}
+bindpw {{ ldap_user.admin.pass }}

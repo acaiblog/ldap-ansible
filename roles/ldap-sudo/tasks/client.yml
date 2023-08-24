@@ -1,0 +1,31 @@
+---
+- name: Copy pam_ldap.conf
+  template:
+    src: pam_ldap.conf.j2
+    dest: /etc/pam_ldap.conf
+
+- name: Add nsswitch.conf file to Suport sudo
+  lineinfile:
+    path: /etc/nsswitch.conf
+    regexp: '^sudoers:'
+    line: 'sudoers:    files sss'
+
+- name: Configure sudo_provider in SSSD
+  blockinfile:
+    path: /etc/sssd/sssd.conf
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - SUDO PROVIDER"
+    block: |
+      [domain/default]
+      sudo_provider = ldap
+    insertafter: '^\[domain\/default\]'
+
+- name: Add sudo to services in SSSD
+  lineinfile:
+    path: /etc/sssd/sssd.conf
+    regex: '^services'
+    line: 'services = nss, pam, autofs, sudo'
+
+- name: Restart SSSD Service
+  systemd:
+    name: sssd
+    state: restarted

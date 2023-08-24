@@ -1,0 +1,28 @@
+---
+- name: Copy SSSD service config
+  template:
+    src: sssd.conf.j2
+    dest: /etc/sssd/sssd.conf
+    mode: 0600
+
+- name: Set UsePAM to yes
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?UsePAM'
+    line: 'UsePAM yes'
+    state: present
+  notify: Restart SSH Service
+
+- name: Set PasswordAuthentication to yes
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PasswordAuthentication'
+    line: 'PasswordAuthentication yes'
+    state: present
+  notify: Restart SSH Service
+
+- name: Start SSSD Service
+  systemd:
+    name: sssd
+    state: restarted
+    enabled: yes

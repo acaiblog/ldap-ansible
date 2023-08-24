@@ -1,0 +1,9 @@
+---
+# tasks file for roles/ldap-sudo
+- name: debug
+  debug:
+    msg: "{{ inventory_hostname }}"
+- include: server.yml
+  when: inventory_hostname in groups['ldap_server']
+- include: client.yml
+  when: inventory_hostname in groups['ldap_client']

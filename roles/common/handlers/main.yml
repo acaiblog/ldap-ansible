@@ -1,0 +1,6 @@
+---
+# handlers file for roles/common
+- name: Restart SSH Service
+  systemd:
+    name: sshd
+    state: restarted
