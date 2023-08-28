@@ -1,0 +1,6 @@
+---
+# handlers file for roles/ldap-policy
+- name: Restart SSSD Service
+  systemd:
+    name: sssd
+    state: restarted

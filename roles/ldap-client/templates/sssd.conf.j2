@@ -27,7 +27,9 @@ domains = default
 homedir_substring = /home
 
 [pam]
-
+offline_credentials_expiration = 2
+offline_failed_login_attempts = 3
+offline_failed_login_delay = 5
 [sudo]
 
 [autofs]

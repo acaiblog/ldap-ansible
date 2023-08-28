@@ -1,9 +1,12 @@
 ---
 api_interface: eth0
-chrony_server: 192.168.1.34
-ldap_server_ip: 192.168.1.34
+chrony_server: 192.168.1.40
+ldap_server_ip: 192.168.1.40
 ldap_domain: ldap.com
+#用户sudo权限
 enable_sudo: yes
+#用户密码策略
+enable_policy: yes
 ldap_user:
   admin:
     user: admin

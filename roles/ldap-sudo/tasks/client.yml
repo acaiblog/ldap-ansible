@@ -15,7 +15,6 @@
     path: /etc/sssd/sssd.conf
     marker: "# {mark} ANSIBLE MANAGED BLOCK - SUDO PROVIDER"
     block: |
-      [domain/default]
       sudo_provider = ldap
     insertafter: '^\[domain\/default\]'
 

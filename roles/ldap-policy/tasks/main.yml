@@ -1,0 +1,6 @@
+---
+# tasks file for roles/ldap-policy
+- include: server.yml
+  when: inventory_hostname in groups['ldap_server']
+- include: client.yml
+  when: inventory_hostname in groups['ldap_client']

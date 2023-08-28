@@ -46,3 +46,14 @@
   roles:
     - role: ldap-sudo
       when: enable_sudo | bool
+
+- name: Apply role openldap-policy
+  gather_facts: true
+  hosts:
+    - ldap_server
+    - ldap_client
+  tags:
+    - ldap_policy
+  roles:
+    - role: ldap-policy
+      when: enable_policy | bool

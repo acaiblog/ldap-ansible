@@ -29,13 +29,46 @@ users:
       userPassword: "{{ ldap_user.test.pass }}"
       homeDirectory: "/home/test1"
       loginShell: /bin/bash
-#  sssd:
-#    name: "cn={{ ldap_user.sssd.user }}"
-#    group: services
-#    objectClass:
-#      - top
-#      - person
-#    attributes:
-#      cn: "{{ ldap_user.sssd.user }}"
-#      sn: "{{ ldap_user.sssd.user }}"
-#      userPassword: "{{ ldap_user.sssd.pass }}"
+
+  sssd:
+    name: "cn=sssd"
+    group: "services"
+    objectClass:
+      - top
+      - person
+    attributes:
+      cn: "sssd"
+      sn: "sssd"
+      userPassword: "{{ ldap_user.sssd.pass }}"
+
+policy:
+  test:
+    name: test
+    objectClass:
+      - pwdPolicy
+      - person
+    attributes:
+      pwdAllowUserChange: "FALSE"
+      pwdAttribute: 2.5.4.35
+      sn: 虚拟值
+  default:
+    name: default
+    objectClass:
+      - pwdPolicy
+      - person
+    attributes:
+      pwdAllowUserChange: "TRUE"
+      pwdAttribute: 2.5.4.35
+      pwdExpireWarning: 259200
+      pwdFailureCountInterval: 0
+      pwdGraceAuthNLimit: 5
+      pwdInHistory: 3
+      pwdLockout: "TRUE"
+      pwdLockoutDuration: 300
+      pwdMaxAge: 2592000
+      pwdMaxFailure: 5
+      pwdMinAge: 0
+      pwdMinLength: 8
+      pwdMustChange: "TRUE"
+      pwdSafeModify: "TRUE"
+      sn: 虚拟值

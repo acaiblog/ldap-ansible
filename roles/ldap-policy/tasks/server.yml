@@ -1,0 +1,56 @@
+---
+- name: Check Load Policy Module
+  shell: "slapcat -n 0 |grep olcModuleLoad"
+  failed_when: false
+  register: policy_module_result
+
+- name: Debug Policy Module
+  debug:
+    msg: "{{ policy_module_result }}"
+
+- name: Configure ppolicy module
+  shell: |
+    cat << EOF | ldapadd -Y EXTERNAL -H ldapi:///
+    dn: cn=module,cn=config
+    cn: module
+    objectClass: olcModuleList
+    olcModulePath: /usr/lib64/openldap
+    olcModuleLoad: ppolicy.la
+    EOF
+  failed_when: false
+
+- name: Add ppolicy objectClass
+  shell: |
+    cat << EOF | ldapadd -Y EXTERNAL -H ldapi:///
+    dn: olcOverlay=ppolicy,olcDatabase={2}hdb,cn=config
+    changetype: add
+    objectClass: olcOverlayConfig
+    objectClass: olcPPolicyConfig
+    olcOverlay: ppolicy
+    olcPPolicyDefault: cn=default,ou=pwpolicies,{{ ldap_server.dc }}
+    olcPPolicyHashCleartext: TRUE
+    olcPPolicyUseLockout: TRUE
+    EOF
+
+- name: Add pwdPolicy entry
+  ldap_entry:
+    dn: "cn={{ item.value.name }},ou=pwpolicies,{{ ldap_server.dc }}"
+    objectClass: "{{ item.value.objectClass }}"
+    attributes: "{{ item.value.attributes }}"
+    state: "present"
+    server_uri: "ldap://{{ ldap_server_ip }}"
+    bind_dn: "{{ ldap_server.admin.dn }}"
+    bind_pw: "{{ ldap_user.admin.pass }}"
+  with_dict: "{{ policy }}"
+
+- name: Modify test1 User use test policy
+  ldap_entry:
+    dn: "uid=test1,ou=users,{{ ldap_server.dc }}"
+    objectClass:
+      - posixAccount
+    attributes:
+      pwdPolicySubentry: "cn=test,ou=pwpolicies,{{ ldap_server.dc }}"
+    state: "present"
+    server_uri: "ldap://{{ ldap_server_ip }}"
+    bind_dn: "{{ ldap_server.admin.dn }}"
+    bind_pw: "{{ ldap_user.admin.pass }}"
