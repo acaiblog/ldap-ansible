@@ -3,5 +3,7 @@
 arch:
   x86_64:
     base: 'CentOS-Base.repo'
+    epel: 'epel-7.repo'
   aarch64:
     base: 'CentOS-altarch-7.repo'
+    epel: 'epel-7.repo'

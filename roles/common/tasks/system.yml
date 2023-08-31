@@ -14,6 +14,7 @@
     regexp: '^SELINUX=.*'
     line: 'SELINUX=disabled'
     state: present
+  notify: Reboot System
 
 - name: Set Kernel Parameters
   sysctl:
@@ -48,9 +49,4 @@
   copy:
     src: /usr/share/zoneinfo/Asia/Shanghai
     dest: /etc/localtime
-
-- name: config pip
-  copy:
-    src: pip.conf
-    dest: /etc/pip.conf
 

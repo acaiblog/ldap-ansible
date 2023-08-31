@@ -12,13 +12,14 @@
   with_items:
     - "{{ repo_files.files }}"
 
-- name: copy yum file
-  copy:
-    src: "{{ item }}"
-    dest: "/etc/yum.repos.d/{{ item }}"
-  with_items:
-    - "{{ arch[ansible_architecture]['base']}}"
-    - "epel-7.repo"
+- name: Ensure YUM Repository is present
+  yum_repository:
+    name: "{{ item.key }}"
+    baseurl: "{{ item.value }}"
+    enabled: yes
+    gpgcheck: no
+    description: ''
+  with_dict: "{{ yum }}"
 
 - name: install software
   yum:

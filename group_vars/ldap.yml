@@ -48,27 +48,33 @@ policy:
       - pwdPolicy
       - person
     attributes:
-      pwdAllowUserChange: "FALSE"
-      pwdAttribute: 2.5.4.35
-      sn: 虚拟值
-  default:
-    name: default
-    objectClass:
-      - pwdPolicy
-      - person
-    attributes:
+      # 允许用户更改自己的密码
       pwdAllowUserChange: "TRUE"
+      # 包含用户密码的属性userPassword
       pwdAttribute: 2.5.4.35
+      # 在密码过期前提前 3 天通知用户更改密码
       pwdExpireWarning: 259200
+      # 连续密码失败计数的时间间隔（禁用）
       pwdFailureCountInterval: 0
+      # 密码过期后允许的宽限认证次数
       pwdGraceAuthNLimit: 5
+      # 在历史记录中保存的密码数量，以防止重复使用
       pwdInHistory: 3
+      # 启用账户锁定功能
       pwdLockout: "TRUE"
+      # 账户锁定的持续时间（秒）
       pwdLockoutDuration: 300
+      # 密码的最大使用时间（30 天）
       pwdMaxAge: 2592000
+      # 连续密码失败次数达到最大值前允许的次数
       pwdMaxFailure: 5
+      # 密码的最小使用时间（0 秒）
       pwdMinAge: 0
+      # 密码的最小长度
       pwdMinLength: 8
+      # 第一次登录时需要用户更改初始密码
       pwdMustChange: "TRUE"
+      # 启用安全修改模式（确保安全性）
       pwdSafeModify: "TRUE"
+      # 姓氏字段（虚拟值）
       sn: 虚拟值

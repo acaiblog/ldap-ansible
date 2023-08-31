@@ -1,7 +1,7 @@
 ---
 api_interface: eth0
-chrony_server: 192.168.1.40
-ldap_server_ip: 192.168.1.40
+chrony_server: 192.168.1.47
+ldap_server_ip: 192.168.1.47
 ldap_domain: ldap.com
 #用户sudo权限
 enable_sudo: yes
@@ -17,4 +17,13 @@ ldap_user:
   sssd:
     user: sssd
     pass: 123456
+
+yum:
+  #base: 'https://mirrors.aliyun.com/centos/$releasever/os/$basearch'
+  base: 'http://192.168.1.2:8081/repository/centos/$releasever/os/$basearch'
+  #epel: 'https://mirrors.aliyun.com/epel/$releasever/$basearch'
+  epel: 'http://192.168.1.2:8081/repository/epel/$releasever/$basearch'
+
+#pip: https://pypi.tuna.tsinghua.edu.cn/simple
+pip: http://192.168.1.2:8081/repository/pypi/simple
 

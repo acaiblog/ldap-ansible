@@ -1,8 +1,14 @@
 ---
+- name: config pip
+  template:
+    src: pip.conf.j2
+    dest: /etc/pip.conf
+
 - name: Install Python Module
   pip:
     name: "{{ item }}"
     state: present
     version: 3.0.0
+    extra_args: "--trusted-host {{ pip.split('/')[2].split(':')[0] }}"
   with_items:
     - python-ldap

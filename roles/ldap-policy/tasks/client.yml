@@ -1,1 +1,11 @@
 ---
+- name: Set pwdPolicySubentry attribute
+  ldap_attrs:
+    dn: "uid=test1,ou=users,dc=ldap,dc=com"
+    state: "present"
+    attributes:
+      pwdPolicySubentry:
+        - "cn=test,ou=pwpolicies,dc=ldap,dc=com"
+    server_uri: "ldap://{{ ldap_server_ip }}"
+    bind_dn: "cn=admin,dc=ldap,dc=com"
+    bind_pw: "123456"

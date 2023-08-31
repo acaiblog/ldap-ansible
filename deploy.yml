@@ -5,7 +5,7 @@
     - ldap_server
     - ldap_client
   tags:
-    - common
+    - ldap_common
   roles:
     - role: common
 
